@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace _12_Stack_Implementation
 {
-    class StackImplementation<T>
+    class StackImplementation<T> : IEnumerable
     {
         private const int INITIAL_CAPACITY = 4;
         private T[] elements;
@@ -36,7 +37,7 @@ namespace _12_Stack_Implementation
 
         public T Pop()
         {
-            if(this.Count == 0)
+            if (this.Count == 0)
             {
                 throw new ArgumentNullException("Stack is empty.");
             }
@@ -53,13 +54,26 @@ namespace _12_Stack_Implementation
             {
                 throw new ArgumentNullException("Stack is empty.");
             }
-            return this.elements[this.lastIndex];
+            return this.elements[this.lastIndex - 1];
         }
         private void Resize()
         {
             this.capacity = this.capacity * 2;
             Array.Resize(ref this.elements, capacity);
-            
+
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            for (int i = 0; i < this.Count; i++)
+            {
+                yield return this.elements[i];
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return elements.GetEnumerator();
         }
     }
 }
