@@ -8,6 +8,8 @@ namespace _14_Labyrinth
 {
     class Labyrinth
     {
+        static Queue<Cell> queue = new Queue<Cell>();
+        static Cell currentCell = new Cell(2, 1, 0);
         const int width = 6;
         const int height = 6;
         static string[,] lab =
@@ -22,27 +24,53 @@ namespace _14_Labyrinth
 
         static void Main(string[] args)
         {
+           
+            queue.Enqueue(currentCell);
+            while (queue.Count > 0)
+            {
+                currentCell = queue.Dequeue();
+                int currentRow = currentCell.Row;
+                int currentCol = currentCell.Col;
+                int currentDistance = currentCell.Distance;
+                if(lab[currentRow, currentCol] != "*")
+                {
+                    lab[currentRow, currentCol] = currentDistance.ToString();
 
-            findExit(2, 1, 0);
+                }
+                currentDistance += 1;
+                checkValidCell(currentRow, currentCol + 1, currentDistance);
+                checkValidCell(currentRow + 1, currentCol, currentDistance);
+                checkValidCell(currentRow, currentCol - 1, currentDistance);
+                checkValidCell(currentRow - 1, currentCol, currentDistance);
+
+
+            }
+
             Console.WriteLine(printLabyrinth(lab));
         }
 
-        private static void findExit(int row, int col, int count)
+        private static void checkValidCell(int row, int col, int distance)
         {
-            if (row < 0 || row >= height || col < 0 || col >= width || isVisited(row, col))
+            if (row < 0 || row >= height || col < 0 || col >= width)
             {
                 return;
             }
+            if(lab[row,col] != "0" || lab[row, col] == "*")
+            {
+                return;
+            }
+            //int currentIntValue;
+           
+            //if (int.TryParse(lab[row, col], out currentIntValue))
+            //{
+            //    if(currentIntValue >= distance)
+            //    {
+            //        return;
+            //    }
+            //}
             else
             {
-
-                lab[row, col] = count.ToString();
-                count += 1;
-                findExit(row, col + 1, count);
-                findExit(row + 1, col, count);
-                findExit(row, col - 1, count);
-                findExit(row - 1, col, count);
-
+                queue.Enqueue(new Cell(row, col, distance));
             }
 
         }
@@ -66,7 +94,15 @@ namespace _14_Labyrinth
             {
                 for (int j = 0; j < width; j++)
                 {
-                    sb.Append(lab[i, j] + " ");
+                    if(lab[i,j] == "0")
+                    {
+                        sb.Append("u ");
+                    }
+                    else
+                    {
+                        sb.Append(lab[i, j] + " ");
+                    }
+                   
                 }
                 sb.Append('\n');
             }
